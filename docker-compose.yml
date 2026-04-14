@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    container_name: phone_db
+    restart: always
+    environment:
+      POSTGRES_DB: phones
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  api:
+    build:
+      context: ./CheckNumberPhoneAPI
+      dockerfile: Dockerfile
+    container_name: phone_api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: Host=db;Port=5432;Database=phones;Username=postgres;Password=postgres
+
+  parser:
+    build:
+      context: ./VacancyParser
+      dockerfile: Dockerfile
+    container_name: parser
+    restart: always
+    depends_on:
+      - api
+    environment:
+      API_URL: http://api:8080
+      CONFIG_PATH: /app/config/config.json
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  postgres_data:

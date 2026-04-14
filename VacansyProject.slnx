@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CheckNumberPhoneAPI/CheckNumberPhoneAPI.csproj" />
+  <Project Path="VacancyParser/VacancyParser.csproj" />
+</Solution>
