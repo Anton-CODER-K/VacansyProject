@@ -42,6 +42,7 @@ services:
       CONFIG_PATH: /app/config/config.json
     volumes:
       - ./data:/app/data
+      - ./logs:/app/logs  
 
 volumes:
   postgres_data:
